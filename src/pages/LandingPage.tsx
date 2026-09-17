@@ -1,14 +1,15 @@
 import { Link } from 'react-router-dom'
-import { Brain, Clock, Search, ArrowRight, ChevronRight } from 'lucide-react'
+import { Calendar, Clock, Search, ArrowRight, ChevronRight } from 'lucide-react'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import campusImg from '../assets/kr-mangalam-pic.png'
+import { useApp } from '../context/AppContext'
 
 const features = [
   {
-    icon: Brain,
-    title: 'Smart Timetable Analysis',
-    desc: 'SPACIA processes structured university timetable data to determine accurate classroom availability — no guesswork.',
+    icon: Calendar,
+    title: 'Schedule Timetable Analysis',
+    desc: 'SPACIA processes structured university timetable data to determine accurate classroom availability — deterministically, without guesswork.',
   },
   {
     icon: Clock,
@@ -23,6 +24,8 @@ const features = [
 ]
 
 export default function LandingPage() {
+  const { isStudentLoggedIn } = useApp()
+
   return (
     <div className="min-h-screen bg-[#F4F7FF]">
       <Navbar />
@@ -56,17 +59,17 @@ export default function LandingPage() {
 
             <div className="flex flex-col sm:flex-row gap-4">
               <Link
-                to="/login"
+                to={isStudentLoggedIn ? '/dashboard' : '/login'}
                 className="inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-semibold rounded-xl transition-all hover:shadow-lg hover:shadow-[#2563EB]/25 group"
               >
                 Find Vacant Classroom
                 <ArrowRight size={16} className="group-hover:translate-x-0.5 transition-transform" />
               </Link>
               <Link
-                to="/login"
+                to={isStudentLoggedIn ? '/dashboard' : '/login'}
                 className="inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-xl border border-white/20 transition-all"
               >
-                Student Login
+                {isStudentLoggedIn ? 'Open Dashboard' : 'Student Login'}
                 <ChevronRight size={16} />
               </Link>
             </div>
@@ -120,7 +123,7 @@ export default function LandingPage() {
             Login with your student credentials to search for available classrooms right now.
           </p>
           <Link
-            to="/login"
+            to={isStudentLoggedIn ? '/dashboard' : '/login'}
             className="inline-flex items-center gap-2 px-8 py-4 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-semibold rounded-xl transition-all hover:shadow-xl hover:shadow-[#2563EB]/30"
           >
             Get Started

@@ -1,15 +1,33 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { Search, Bell, BookOpen, ChevronRight } from 'lucide-react'
 import Navbar from '../components/Navbar'
 import { useApp } from '../context/AppContext'
+import { calculateScheduleAvailability } from '../utils/timetableLogic'
 
 const BLOCKS = ['Block A', 'Block B', 'Block C', 'Block D']
 const TIMES = [
-  '08:00 AM', '08:30 AM', '09:00 AM', '09:30 AM', '09:10 AM',
-  '10:00 AM', '10:30 AM', '10:50 AM', '11:00 AM', '11:30 AM', '11:50 AM',
-  '12:00 PM', '12:30 PM', '12:40 PM', '01:00 PM', '01:30 PM',
-  '02:00 PM', '02:30 PM', '03:00 PM', '03:30 PM', '04:00 PM',
+  '08:00 AM',
+  '08:30 AM',
+  '09:00 AM',
+  '09:10 AM',
+  '09:30 AM',
+  '10:00 AM',
+  '10:30 AM',
+  '10:50 AM',
+  '11:00 AM',
+  '11:30 AM',
+  '11:50 AM',
+  '12:00 PM',
+  '12:30 PM',
+  '12:40 PM',
+  '01:00 PM',
+  '01:30 PM',
+  '02:00 PM',
+  '02:30 PM',
+  '03:00 PM',
+  '03:30 PM',
+  '04:00 PM',
 ]
 
 export default function StudentDashboard() {
@@ -18,14 +36,29 @@ export default function StudentDashboard() {
   const [startTime, setStartTime] = useState('11:00 AM')
   const [endTime, setEndTime] = useState('11:50 AM')
   const navigate = useNavigate()
-  const { announcements } = useApp()
+  const { announcements, timetable } = useApp()
 
   const unread = announcements.filter(a => !a.isRead)
   const recentAnnouncements = announcements.slice(0, 2)
 
+  // Compute real schedule-based availability for selected block and window
+  const { availableRooms, allRoomsInBlock } = calculateScheduleAvailability(
+    timetable,
+    block,
+    date,
+    startTime,
+    endTime,
+  )
+
+  const totalBlockRooms = allRoomsInBlock.length || 6
+  const freeRoomsCount = availableRooms.length
+  const freePercentage = totalBlockRooms > 0 ? Math.round((freeRoomsCount / totalBlockRooms) * 100) : 0
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
-    navigate(`/search?block=${encodeURIComponent(block)}&date=${date}&start=${encodeURIComponent(startTime)}&end=${encodeURIComponent(endTime)}`)
+    navigate(
+      `/search?block=${encodeURIComponent(block)}&date=${date}&start=${encodeURIComponent(startTime)}&end=${encodeURIComponent(endTime)}`,
+    )
   }
 
   const priorityColor: Record<string, string> = {
@@ -56,7 +89,9 @@ export default function StudentDashboard() {
                   <Search size={18} className="text-[#2563EB]" />
                 </div>
                 <div>
-                  <h2 className="font-display text-xl font-600 text-[#0F2557]">Find a Vacant Classroom</h2>
+                  <h2 className="font-display text-xl font-600 text-[#0F2557]">
+                    Find a Vacant Classroom
+                  </h2>
                   <p className="text-[#6B7BA4] text-xs">Select your block, date and time window</p>
                 </div>
               </div>
@@ -69,7 +104,9 @@ export default function StudentDashboard() {
                     onChange={e => setBlock(e.target.value)}
                     className="w-full px-4 py-3 rounded-xl border border-[#D4DEFF] bg-[#F4F7FF] text-[#0D1B3E] text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB]/30 focus:border-[#2563EB] transition"
                   >
-                    {BLOCKS.map(b => <option key={b}>{b}</option>)}
+                    {BLOCKS.map(b => (
+                      <option key={b}>{b}</option>
+                    ))}
                   </select>
                 </div>
 
@@ -85,13 +122,17 @@ export default function StudentDashboard() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-[#0D1B3E] mb-1.5">Start Time</label>
+                    <label className="block text-sm font-medium text-[#0D1B3E] mb-1.5">
+                      Start Time
+                    </label>
                     <select
                       value={startTime}
                       onChange={e => setStartTime(e.target.value)}
                       className="w-full px-4 py-3 rounded-xl border border-[#D4DEFF] bg-[#F4F7FF] text-[#0D1B3E] text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB]/30 focus:border-[#2563EB] transition"
                     >
-                      {TIMES.map(t => <option key={t}>{t}</option>)}
+                      {TIMES.map(t => (
+                        <option key={t}>{t}</option>
+                      ))}
                     </select>
                   </div>
                   <div>
@@ -101,18 +142,20 @@ export default function StudentDashboard() {
                       onChange={e => setEndTime(e.target.value)}
                       className="w-full px-4 py-3 rounded-xl border border-[#D4DEFF] bg-[#F4F7FF] text-[#0D1B3E] text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB]/30 focus:border-[#2563EB] transition"
                     >
-                      {TIMES.map(t => <option key={t}>{t}</option>)}
+                      {TIMES.map(t => (
+                        <option key={t}>{t}</option>
+                      ))}
                     </select>
                   </div>
                 </div>
 
                 <div className="pt-2">
                   <p className="text-xs text-[#6B7BA4] mb-3 font-mono">
-                    Example: Block B · 17 Sep 2026 · 11:00 AM – 11:50 AM
+                    Schedule-based availability · {block} · {startTime} – {endTime}
                   </p>
                   <button
                     type="submit"
-                    className="w-full flex items-center justify-center gap-2 px-6 py-3.5 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-semibold rounded-xl transition-all hover:shadow-lg hover:shadow-[#2563EB]/25 group"
+                    className="w-full flex items-center justify-center gap-2 px-6 py-3.5 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-semibold rounded-xl transition-all hover:shadow-lg hover:shadow-[#2563EB]/25 group cursor-pointer"
                   >
                     <Search size={16} />
                     Find Available Rooms
@@ -126,15 +169,24 @@ export default function StudentDashboard() {
           <div className="space-y-5">
             {/* Availability stat */}
             <div className="bg-white rounded-2xl border border-[#D4DEFF] p-6 shadow-sm">
-              <p className="text-xs font-medium text-[#6B7BA4] uppercase tracking-wider mb-3">Today's Availability</p>
+              <p className="text-xs font-medium text-[#6B7BA4] uppercase tracking-wider mb-3">
+                Schedule Availability
+              </p>
               <div className="flex items-end gap-2 mb-1">
-                <span className="font-display text-5xl font-800 text-[#16A34A]">12</span>
-                <span className="text-[#6B7BA4] text-sm mb-2">rooms available</span>
+                <span className="font-display text-5xl font-800 text-[#16A34A]">
+                  {freeRoomsCount}
+                </span>
+                <span className="text-[#6B7BA4] text-sm mb-2">rooms free</span>
               </div>
-              <div className="w-full bg-[#F4F7FF] rounded-full h-2 mt-3">
-                <div className="bg-[#16A34A] h-2 rounded-full" style={{ width: '42%' }} />
+              <div className="w-full bg-[#F4F7FF] rounded-full h-2 mt-3 overflow-hidden">
+                <div
+                  className="bg-[#16A34A] h-2 rounded-full transition-all duration-500"
+                  style={{ width: `${Math.min(100, freePercentage)}%` }}
+                />
               </div>
-              <p className="text-xs text-[#6B7BA4] mt-2">12 of 28 classrooms in Block B free now</p>
+              <p className="text-xs text-[#6B7BA4] mt-2">
+                {freeRoomsCount} of {totalBlockRooms} classrooms in {block} available for this interval
+              </p>
             </div>
 
             {/* Unread notification */}
@@ -146,7 +198,9 @@ export default function StudentDashboard() {
                     {unread.length} unread announcement{unread.length > 1 ? 's' : ''}
                   </span>
                 </div>
-                <p className="text-xs text-[#6B7BA4] ml-5">Check the Announcements page</p>
+                <Link to="/announcements" className="text-xs text-[#2563EB] hover:underline ml-5">
+                  Check the Announcements page →
+                </Link>
               </div>
             )}
           </div>
@@ -159,21 +213,28 @@ export default function StudentDashboard() {
               <BookOpen size={18} className="text-[#2563EB]" />
               Recent Announcements
             </h3>
-            <a href="/announcements" className="text-sm text-[#2563EB] hover:underline flex items-center gap-1">
+            <Link
+              to="/announcements"
+              className="text-sm text-[#2563EB] hover:underline flex items-center gap-1"
+            >
               View all <ChevronRight size={14} />
-            </a>
+            </Link>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {recentAnnouncements.map(a => (
               <div
                 key={a.id}
-                className={`bg-white rounded-xl border p-5 relative ${a.isRead ? 'border-[#D4DEFF]' : 'border-[#2563EB]/30'}`}
+                className={`bg-white rounded-xl border p-5 relative ${
+                  a.isRead ? 'border-[#D4DEFF]' : 'border-[#2563EB]/30 shadow-sm'
+                }`}
               >
                 {!a.isRead && (
                   <span className="absolute top-4 right-4 w-2 h-2 rounded-full bg-[#2563EB]" />
                 )}
-                <span className={`inline-block text-xs font-medium px-2.5 py-0.5 rounded-full mb-3 ${priorityColor[a.priority]}`}>
+                <span
+                  className={`inline-block text-xs font-medium px-2.5 py-0.5 rounded-full mb-3 ${priorityColor[a.priority]}`}
+                >
                   {a.priority}
                 </span>
                 <h4 className="font-semibold text-[#0F2557] text-sm mb-1">{a.title}</h4>

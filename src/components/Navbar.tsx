@@ -1,11 +1,11 @@
 import { useState } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
-import { Menu, X, LogOut } from 'lucide-react'
+import { Menu, X, LogOut, Shield } from 'lucide-react'
 import { useApp } from '../context/AppContext'
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false)
-  const { isStudentLoggedIn, logoutStudent } = useApp()
+  const { isStudentLoggedIn, isAdminLoggedIn, logoutStudent, logoutAdmin } = useApp()
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -18,8 +18,13 @@ export default function Navbar() {
 
   const isActive = (to: string) => location.pathname === to
 
-  const handleLogout = () => {
+  const handleStudentLogout = () => {
     logoutStudent()
+    navigate('/')
+  }
+
+  const handleAdminLogout = () => {
+    logoutAdmin()
     navigate('/')
   }
 
@@ -53,12 +58,29 @@ export default function Navbar() {
           <div className="hidden md:flex items-center gap-3">
             {isStudentLoggedIn ? (
               <button
-                onClick={handleLogout}
-                className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-[#6B7BA4] hover:text-[#DC2626] transition-colors"
+                onClick={handleStudentLogout}
+                className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-[#6B7BA4] hover:text-[#DC2626] transition-colors cursor-pointer"
               >
                 <LogOut size={15} />
                 Logout
               </button>
+            ) : isAdminLoggedIn ? (
+              <div className="flex items-center gap-2">
+                <Link
+                  to="/admin/dashboard"
+                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-[#0F2557] bg-[#E8EEFF] hover:bg-[#D4DEFF] rounded-lg transition-colors"
+                >
+                  <Shield size={13} />
+                  Admin Panel
+                </Link>
+                <button
+                  onClick={handleAdminLogout}
+                  className="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-[#6B7BA4] hover:text-[#DC2626] transition-colors cursor-pointer"
+                >
+                  <LogOut size={13} />
+                  Logout
+                </button>
+              </div>
             ) : (
               <>
                 <Link
@@ -80,6 +102,7 @@ export default function Navbar() {
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
             className="md:hidden p-2 rounded-lg text-[#0F2557] hover:bg-[#F4F7FF] transition-colors"
+            aria-label="Toggle navigation menu"
           >
             {mobileOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
@@ -105,11 +128,33 @@ export default function Navbar() {
           <div className="pt-2 border-t border-[#D4DEFF] space-y-2">
             {isStudentLoggedIn ? (
               <button
-                onClick={() => { handleLogout(); setMobileOpen(false) }}
+                onClick={() => {
+                  handleStudentLogout()
+                  setMobileOpen(false)
+                }}
                 className="w-full px-4 py-3 text-sm font-medium text-[#DC2626] text-left"
               >
                 Logout
               </button>
+            ) : isAdminLoggedIn ? (
+              <div className="space-y-2">
+                <Link
+                  to="/admin/dashboard"
+                  onClick={() => setMobileOpen(false)}
+                  className="block px-4 py-3 text-sm font-medium text-[#0F2557] bg-[#E8EEFF] rounded-lg"
+                >
+                  Admin Dashboard
+                </Link>
+                <button
+                  onClick={() => {
+                    handleAdminLogout()
+                    setMobileOpen(false)
+                  }}
+                  className="w-full px-4 py-3 text-sm font-medium text-[#DC2626] text-left"
+                >
+                  Logout Admin
+                </button>
+              </div>
             ) : (
               <>
                 <Link

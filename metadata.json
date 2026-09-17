@@ -1,0 +1,6 @@
+{
+  "name": "SPACIA",
+  "description": "Schedule-based vacant classroom finder for K.R. Mangalam University",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

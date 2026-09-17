@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Eye, EyeOff, ArrowRight } from 'lucide-react'
 import { useApp } from '../context/AppContext'
@@ -11,8 +11,14 @@ export default function StudentLogin() {
   const [remember, setRemember] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const { loginStudent } = useApp()
+  const { isStudentLoggedIn, loginStudent } = useApp()
   const navigate = useNavigate()
+
+  useEffect(() => {
+    if (isStudentLoggedIn) {
+      navigate('/dashboard', { replace: true })
+    }
+  }, [isStudentLoggedIn, navigate])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()

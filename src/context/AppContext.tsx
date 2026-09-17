@@ -1,4 +1,7 @@
-import { createContext, useContext, useState, type ReactNode } from 'react'
+import { createContext, useContext, useState, useEffect, type ReactNode } from 'react'
+import { INITIAL_TIMETABLE_FALLBACK, type TimetableEntry } from '../utils/timetableLogic'
+
+export type { TimetableEntry }
 
 export interface Announcement {
   id: string
@@ -9,21 +12,12 @@ export interface Announcement {
   isRead: boolean
 }
 
-export interface TimetableEntry {
-  id: string
-  room: string
-  block: string
-  day: string
-  startTime: string
-  endTime: string
-  subject: string
-}
-
 interface AppContextType {
   isStudentLoggedIn: boolean
   isAdminLoggedIn: boolean
   announcements: Announcement[]
   timetable: TimetableEntry[]
+  savedRooms: string[]
   loginStudent: () => void
   logoutStudent: () => void
   loginAdmin: () => void
@@ -35,18 +29,9 @@ interface AppContextType {
   addTimetableEntry: (e: Omit<TimetableEntry, 'id'>) => void
   updateTimetableEntry: (e: TimetableEntry) => void
   deleteTimetableEntry: (id: string) => void
+  toggleSaveRoom: (roomId: string) => void
+  isRoomSaved: (roomId: string) => boolean
 }
-
-const initialTimetable: TimetableEntry[] = [
-  { id: '1', room: 'B-201', block: 'B', day: 'Monday', startTime: '09:10', endTime: '10:00', subject: 'Mathematics' },
-  { id: '2', room: 'B-201', block: 'B', day: 'Monday', startTime: '10:00', endTime: '10:50', subject: 'Physics' },
-  { id: '3', room: 'B-203', block: 'B', day: 'Monday', startTime: '11:00', endTime: '11:50', subject: 'DBMS' },
-  { id: '4', room: 'B-207', block: 'B', day: 'Monday', startTime: '12:00', endTime: '12:50', subject: 'Mathematics' },
-  { id: '5', room: 'B-202', block: 'B', day: 'Monday', startTime: '09:00', endTime: '09:50', subject: 'Chemistry' },
-  { id: '6', room: 'B-204', block: 'B', day: 'Monday', startTime: '14:00', endTime: '14:50', subject: 'Data Structures' },
-  { id: '7', room: 'A-101', block: 'A', day: 'Monday', startTime: '09:00', endTime: '10:00', subject: 'Calculus' },
-  { id: '8', room: 'A-102', block: 'A', day: 'Monday', startTime: '10:00', endTime: '11:00', subject: 'English' },
-]
 
 const initialAnnouncements: Announcement[] = [
   {
@@ -83,19 +68,102 @@ const initialAnnouncements: Announcement[] = [
   },
 ]
 
+const STORAGE_KEYS = {
+  TIMETABLE: 'spacia_timetable_data',
+  ANNOUNCEMENTS: 'spacia_announcements_data',
+  STUDENT_AUTH: 'spacia_student_auth',
+  ADMIN_AUTH: 'spacia_admin_auth',
+  SAVED_ROOMS: 'spacia_saved_rooms',
+}
+
+function loadFromStorage<T>(key: string, fallback: T): T {
+  try {
+    const item = localStorage.getItem(key)
+    if (item) {
+      return JSON.parse(item)
+    }
+  } catch (err) {
+    console.warn(`Failed to read ${key} from localStorage:`, err)
+  }
+  return fallback
+}
+
+function saveToStorage<T>(key: string, value: T): void {
+  try {
+    localStorage.setItem(key, JSON.stringify(value))
+  } catch (err) {
+    console.warn(`Failed to save ${key} to localStorage:`, err)
+  }
+}
+
 const AppContext = createContext<AppContextType | null>(null)
 
 export function AppProvider({ children }: { children: ReactNode }) {
-  const [isStudentLoggedIn, setIsStudentLoggedIn] = useState(false)
-  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false)
-  const [announcements, setAnnouncements] = useState<Announcement[]>(initialAnnouncements)
-  const [timetable, setTimetable] = useState<TimetableEntry[]>(initialTimetable)
+  // Separate student and admin authentication states with localStorage persistence
+  const [isStudentLoggedIn, setIsStudentLoggedIn] = useState<boolean>(() => {
+    return loadFromStorage<boolean>(STORAGE_KEYS.STUDENT_AUTH, false)
+  })
 
-  const loginStudent = () => setIsStudentLoggedIn(true)
-  const logoutStudent = () => setIsStudentLoggedIn(false)
-  const loginAdmin = () => setIsAdminLoggedIn(true)
-  const logoutAdmin = () => setIsAdminLoggedIn(false)
+  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState<boolean>(() => {
+    return loadFromStorage<boolean>(STORAGE_KEYS.ADMIN_AUTH, false)
+  })
 
+  // Announcements state with persistence
+  const [announcements, setAnnouncements] = useState<Announcement[]>(() => {
+    return loadFromStorage<Announcement[]>(STORAGE_KEYS.ANNOUNCEMENTS, initialAnnouncements)
+  })
+
+  // Timetable state with persistence and initial mock fallback
+  const [timetable, setTimetable] = useState<TimetableEntry[]>(() => {
+    return loadFromStorage<TimetableEntry[]>(STORAGE_KEYS.TIMETABLE, INITIAL_TIMETABLE_FALLBACK)
+  })
+
+  // Saved rooms state with persistence
+  const [savedRooms, setSavedRooms] = useState<string[]>(() => {
+    return loadFromStorage<string[]>(STORAGE_KEYS.SAVED_ROOMS, [])
+  })
+
+  // Keep localStorage in sync whenever state changes
+  useEffect(() => {
+    saveToStorage(STORAGE_KEYS.STUDENT_AUTH, isStudentLoggedIn)
+  }, [isStudentLoggedIn])
+
+  useEffect(() => {
+    saveToStorage(STORAGE_KEYS.ADMIN_AUTH, isAdminLoggedIn)
+  }, [isAdminLoggedIn])
+
+  useEffect(() => {
+    saveToStorage(STORAGE_KEYS.ANNOUNCEMENTS, announcements)
+  }, [announcements])
+
+  useEffect(() => {
+    saveToStorage(STORAGE_KEYS.TIMETABLE, timetable)
+  }, [timetable])
+
+  useEffect(() => {
+    saveToStorage(STORAGE_KEYS.SAVED_ROOMS, savedRooms)
+  }, [savedRooms])
+
+  // Authentication handlers - Strictly separate student and admin
+  const loginStudent = () => {
+    setIsStudentLoggedIn(true)
+    setIsAdminLoggedIn(false)
+  }
+
+  const logoutStudent = () => {
+    setIsStudentLoggedIn(false)
+  }
+
+  const loginAdmin = () => {
+    setIsAdminLoggedIn(true)
+    setIsStudentLoggedIn(false)
+  }
+
+  const logoutAdmin = () => {
+    setIsAdminLoggedIn(false)
+  }
+
+  // Announcements CRUD
   const addAnnouncement = (a: Omit<Announcement, 'id' | 'isRead'>) => {
     setAnnouncements(prev => [{ ...a, id: Date.now().toString(), isRead: false }, ...prev])
   }
@@ -112,6 +180,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setAnnouncements(prev => prev.map(x => (x.id === id ? { ...x, isRead: true } : x)))
   }
 
+  // Timetable CRUD - Changes directly update deterministic availability across the app
   const addTimetableEntry = (e: Omit<TimetableEntry, 'id'>) => {
     setTimetable(prev => [...prev, { ...e, id: Date.now().toString() }])
   }
@@ -124,6 +193,15 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setTimetable(prev => prev.filter(x => x.id !== id))
   }
 
+  // Bookmark / Save room
+  const toggleSaveRoom = (roomId: string) => {
+    setSavedRooms(prev =>
+      prev.includes(roomId) ? prev.filter(id => id !== roomId) : [...prev, roomId],
+    )
+  }
+
+  const isRoomSaved = (roomId: string) => savedRooms.includes(roomId)
+
   return (
     <AppContext.Provider
       value={{
@@ -131,6 +209,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         isAdminLoggedIn,
         announcements,
         timetable,
+        savedRooms,
         loginStudent,
         logoutStudent,
         loginAdmin,
@@ -142,6 +221,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
         addTimetableEntry,
         updateTimetableEntry,
         deleteTimetableEntry,
+        toggleSaveRoom,
+        isRoomSaved,
       }}
     >
       {children}

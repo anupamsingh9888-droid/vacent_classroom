@@ -1,6 +1,9 @@
 import { Link } from 'react-router-dom'
+import { useApp } from '../context/AppContext'
 
 export default function Footer() {
+  const { isStudentLoggedIn, isAdminLoggedIn } = useApp()
+
   return (
     <footer className="bg-[#0F2557] text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -22,16 +25,24 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="text-sm font-semibold text-white/80 uppercase tracking-wider mb-4">Navigation</h4>
+            <h4 className="text-sm font-semibold text-white/80 uppercase tracking-wider mb-4">
+              Navigation
+            </h4>
             <ul className="space-y-2">
               {[
                 { label: 'Home', to: '/' },
-                { label: 'Find Classroom', to: '/login' },
+                {
+                  label: 'Find Classroom',
+                  to: isStudentLoggedIn ? '/dashboard' : '/login',
+                },
                 { label: 'Announcements', to: '/announcements' },
                 { label: 'About SPACIA', to: '/about' },
               ].map(link => (
-                <li key={link.to}>
-                  <Link to={link.to} className="text-white/60 hover:text-white text-sm transition-colors">
+                <li key={link.label}>
+                  <Link
+                    to={link.to}
+                    className="text-white/60 hover:text-white text-sm transition-colors"
+                  >
                     {link.label}
                   </Link>
                 </li>
@@ -40,16 +51,24 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="text-sm font-semibold text-white/80 uppercase tracking-wider mb-4">Access</h4>
+            <h4 className="text-sm font-semibold text-white/80 uppercase tracking-wider mb-4">
+              Access
+            </h4>
             <ul className="space-y-2">
               <li>
-                <Link to="/login" className="text-white/60 hover:text-white text-sm transition-colors">
-                  Student Portal
+                <Link
+                  to={isStudentLoggedIn ? '/dashboard' : '/login'}
+                  className="text-white/60 hover:text-white text-sm transition-colors"
+                >
+                  {isStudentLoggedIn ? 'Student Dashboard' : 'Student Portal'}
                 </Link>
               </li>
               <li>
-                <Link to="/admin/login" className="text-white/60 hover:text-white text-sm transition-colors">
-                  Admin Portal
+                <Link
+                  to={isAdminLoggedIn ? '/admin/dashboard' : '/admin/login'}
+                  className="text-white/60 hover:text-white text-sm transition-colors"
+                >
+                  {isAdminLoggedIn ? 'Admin Dashboard' : 'Admin Portal'}
                 </Link>
               </li>
             </ul>

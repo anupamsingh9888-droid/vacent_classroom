@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Eye, EyeOff, ShieldCheck, ArrowRight } from 'lucide-react'
 import { useApp } from '../context/AppContext'
@@ -9,8 +9,14 @@ export default function AdminLogin() {
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const { loginAdmin } = useApp()
+  const { isAdminLoggedIn, loginAdmin } = useApp()
   const navigate = useNavigate()
+
+  useEffect(() => {
+    if (isAdminLoggedIn) {
+      navigate('/admin/dashboard', { replace: true })
+    }
+  }, [isAdminLoggedIn, navigate])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
