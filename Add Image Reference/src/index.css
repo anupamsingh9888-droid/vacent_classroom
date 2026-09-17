@@ -1,0 +1,60 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import 'tailwindcss';
+
+@theme {
+  --font-display: 'Outfit', sans-serif;
+  --font-sans: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  --color-navy: #0F2557;
+  --color-navy-mid: #1A3A8F;
+  --color-royal: #2563EB;
+  --color-sky: #60A5FA;
+  --color-sky-light: #DBEAFE;
+  --color-surface: #F4F7FF;
+  --color-available: #16A34A;
+  --color-occupied: #DC2626;
+  --color-urgent: #EA580C;
+
+  --radius-card: 0.875rem;
+}
+
+:root {
+  --background: #F4F7FF;
+  --foreground: #0D1B3E;
+  --card: #FFFFFF;
+  --card-foreground: #0D1B3E;
+  --primary: #0F2557;
+  --primary-foreground: #FFFFFF;
+  --secondary: #E8EEFF;
+  --secondary-foreground: #0F2557;
+  --muted: #EEF2FF;
+  --muted-foreground: #6B7BA4;
+  --accent: #2563EB;
+  --accent-foreground: #FFFFFF;
+  --border: #D4DEFF;
+  --ring: #2563EB;
+  --radius: 0.875rem;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+*:hover {
+  scrollbar-color: #D4DEFF transparent;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--background);
+  color: var(--foreground);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Outfit', sans-serif;
+}
