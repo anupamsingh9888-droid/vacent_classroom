@@ -60,17 +60,10 @@ export default function LandingPage() {
             <div className="flex flex-col sm:flex-row gap-4">
               <Link
                 to={isStudentLoggedIn ? '/dashboard' : '/login'}
-                className="inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-semibold rounded-xl transition-all hover:shadow-lg hover:shadow-[#2563EB]/25 group"
+                className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-semibold rounded-xl transition-all hover:shadow-lg hover:shadow-[#2563EB]/25 group text-base cursor-pointer"
               >
                 Find Vacant Classroom
-                <ArrowRight size={16} className="group-hover:translate-x-0.5 transition-transform" />
-              </Link>
-              <Link
-                to={isStudentLoggedIn ? '/dashboard' : '/login'}
-                className="inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-xl border border-white/20 transition-all"
-              >
-                {isStudentLoggedIn ? 'Open Dashboard' : 'Student Login'}
-                <ChevronRight size={16} />
+                <ArrowRight size={18} className="group-hover:translate-x-0.5 transition-transform" />
               </Link>
             </div>
           </div>
@@ -120,13 +113,13 @@ export default function LandingPage() {
             Ready to find your space?
           </h2>
           <p className="text-white/60 text-lg mb-8">
-            Login with your student credentials to search for available classrooms right now.
+            Check classroom availability across K.R. Mangalam University right now.
           </p>
           <Link
             to={isStudentLoggedIn ? '/dashboard' : '/login'}
-            className="inline-flex items-center gap-2 px-8 py-4 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-semibold rounded-xl transition-all hover:shadow-xl hover:shadow-[#2563EB]/30"
+            className="inline-flex items-center gap-2 px-8 py-4 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-semibold rounded-xl transition-all hover:shadow-xl hover:shadow-[#2563EB]/30 cursor-pointer"
           >
-            Get Started
+            Find Vacant Classroom
             <ArrowRight size={16} />
           </Link>
         </div>

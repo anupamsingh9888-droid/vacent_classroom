@@ -1,7 +1,8 @@
 import { useState, useRef } from 'react'
-import { Upload, Plus, Pencil, Trash2, Check, X } from 'lucide-react'
+import { Upload, Plus, Pencil, Trash2, Check, X, Clock } from 'lucide-react'
 import AdminSidebar from '../components/AdminSidebar'
 import { useApp, type TimetableEntry } from '../context/AppContext'
+import { UNIVERSITY_PERIODS } from '../utils/timetableLogic'
 
 const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 const BLOCKS = ['A', 'B', 'C', 'D']
@@ -49,7 +50,7 @@ const emptyForm = {
   room: '',
   block: 'B',
   day: 'Thursday',
-  startTime: '09:00',
+  startTime: '09:10',
   endTime: '10:00',
   subject: '',
 }
@@ -344,6 +345,36 @@ export default function AdminTimetable() {
                     onChange={e => setForm(prev => ({ ...prev, endTime: e.target.value }))}
                     className="w-full px-3 py-2.5 rounded-xl border border-[#D4DEFF] bg-[#F4F7FF] text-[#0D1B3E] text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB]/30 focus:border-[#2563EB] transition font-mono"
                   />
+                </div>
+
+                {/* Period quick preset chips */}
+                <div className="col-span-2 sm:col-span-3 pt-1">
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="text-xs font-semibold text-[#0F2557] uppercase tracking-wider">
+                      University Period Quick-Fill
+                    </span>
+                    <span className="text-[11px] text-[#6B7BA4]">Click any period to autofill times</span>
+                  </div>
+                  <div className="grid grid-cols-4 sm:grid-cols-8 gap-1.5">
+                    {UNIVERSITY_PERIODS.map(p => {
+                      const isMatch = form.startTime === p.startTime24 && form.endTime === p.endTime24
+                      return (
+                        <button
+                          key={p.id}
+                          type="button"
+                          onClick={() => setForm(prev => ({ ...prev, startTime: p.startTime24, endTime: p.endTime24 }))}
+                          className={`px-2 py-1.5 rounded-lg text-xs font-medium border text-center transition cursor-pointer ${
+                            isMatch
+                              ? 'bg-[#0F2557] text-white border-[#0F2557] font-semibold ring-1 ring-[#0F2557]'
+                              : 'bg-[#F4F7FF] hover:bg-[#E8EEFF] text-[#0D1B3E] border-[#D4DEFF]'
+                          }`}
+                        >
+                          <span className="block text-[11px] font-bold">P{p.periodNumber}</span>
+                          <span className="block text-[10px] font-mono opacity-80">{p.startTime24}–{p.endTime24}</span>
+                        </button>
+                      )
+                    })}
+                  </div>
                 </div>
               </div>
               <div className="flex justify-end gap-3 mt-5">

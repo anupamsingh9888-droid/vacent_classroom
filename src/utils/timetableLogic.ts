@@ -133,6 +133,133 @@ export const UNIVERSITY_ROOMS: UniversityRoom[] = [
 export const DAYS_OF_WEEK = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 
 /**
+ * Official University Class Periods:
+ * 1. (09:10 to 10:00) AM
+ * 2. (10:05 to 10:55) AM
+ * 3. (11:00 to 11:50) AM
+ * 4. (11:50 AM to 12:40 PM)
+ * 5. (12:40 to 01:30) PM
+ * 6. (01:30 to 02:20) PM
+ * 7. (02:20 to 03:10) PM
+ * 8. (03:10 to 04:00) PM
+ */
+export interface UniversityPeriod {
+  id: number
+  label: string
+  periodNumber: number
+  startTime: string
+  endTime: string
+  startTime24: string
+  endTime24: string
+  display: string
+}
+
+export const UNIVERSITY_PERIODS: UniversityPeriod[] = [
+  {
+    id: 1,
+    periodNumber: 1,
+    label: 'Period 1',
+    startTime: '09:10 AM',
+    endTime: '10:00 AM',
+    startTime24: '09:10',
+    endTime24: '10:00',
+    display: '09:10 AM – 10:00 AM',
+  },
+  {
+    id: 2,
+    periodNumber: 2,
+    label: 'Period 2',
+    startTime: '10:05 AM',
+    endTime: '10:55 AM',
+    startTime24: '10:05',
+    endTime24: '10:55',
+    display: '10:05 AM – 10:55 AM',
+  },
+  {
+    id: 3,
+    periodNumber: 3,
+    label: 'Period 3',
+    startTime: '11:00 AM',
+    endTime: '11:50 AM',
+    startTime24: '11:00',
+    endTime24: '11:50',
+    display: '11:00 AM – 11:50 AM',
+  },
+  {
+    id: 4,
+    periodNumber: 4,
+    label: 'Period 4',
+    startTime: '11:50 AM',
+    endTime: '12:40 PM',
+    startTime24: '11:50',
+    endTime24: '12:40',
+    display: '11:50 AM – 12:40 PM',
+  },
+  {
+    id: 5,
+    periodNumber: 5,
+    label: 'Period 5',
+    startTime: '12:40 PM',
+    endTime: '01:30 PM',
+    startTime24: '12:40',
+    endTime24: '13:30',
+    display: '12:40 PM – 01:30 PM',
+  },
+  {
+    id: 6,
+    periodNumber: 6,
+    label: 'Period 6',
+    startTime: '01:30 PM',
+    endTime: '02:20 PM',
+    startTime24: '13:30',
+    endTime24: '14:20',
+    display: '01:30 PM – 02:20 PM',
+  },
+  {
+    id: 7,
+    periodNumber: 7,
+    label: 'Period 7',
+    startTime: '02:20 PM',
+    endTime: '03:10 PM',
+    startTime24: '14:20',
+    endTime24: '15:10',
+    display: '02:20 PM – 03:10 PM',
+  },
+  {
+    id: 8,
+    periodNumber: 8,
+    label: 'Period 8',
+    startTime: '03:10 PM',
+    endTime: '04:00 PM',
+    startTime24: '15:10',
+    endTime24: '16:00',
+    display: '03:10 PM – 04:00 PM',
+  },
+]
+
+export const UNIVERSITY_START_TIMES: string[] = [
+  '09:10 AM',
+  '10:05 AM',
+  '11:00 AM',
+  '11:50 AM',
+  '12:40 PM',
+  '01:30 PM',
+  '02:20 PM',
+  '03:10 PM',
+]
+
+export const UNIVERSITY_END_TIMES: string[] = [
+  '10:00 AM',
+  '10:55 AM',
+  '11:50 AM',
+  '12:40 PM',
+  '01:30 PM',
+  '02:20 PM',
+  '03:10 PM',
+  '04:00 PM',
+]
+
+/**
  * Parses time strings like "09:10", "09:10 AM", "11:50 AM", "1:00 PM", "14:00"
  * into minutes from midnight (0 to 1439).
  */
@@ -224,38 +351,53 @@ export function normalizeBlock(blockStr: string): string {
  */
 export const INITIAL_TIMETABLE_FALLBACK: TimetableEntry[] = [
   // Thursday schedule (matches 17 Sep 2026 default search)
+  // P1: 09:10 - 10:00
   { id: 'th-1', room: 'B-201', block: 'B', day: 'Thursday', startTime: '09:10', endTime: '10:00', subject: 'Mathematics' },
-  { id: 'th-2', room: 'B-201', block: 'B', day: 'Thursday', startTime: '10:00', endTime: '10:50', subject: 'Physics' },
+  // P2: 10:05 - 10:55
+  { id: 'th-2', room: 'B-201', block: 'B', day: 'Thursday', startTime: '10:05', endTime: '10:55', subject: 'Physics' },
+  // P4: 11:50 - 12:40
   { id: 'th-3', room: 'B-201', block: 'B', day: 'Thursday', startTime: '11:50', endTime: '12:40', subject: 'DBMS' },
-  { id: 'th-4', room: 'B-203', block: 'B', day: 'Thursday', startTime: '10:00', endTime: '11:00', subject: 'Computer Networks' },
+  // P2: 10:05 - 10:55
+  { id: 'th-4', room: 'B-203', block: 'B', day: 'Thursday', startTime: '10:05', endTime: '10:55', subject: 'Computer Networks' },
+  // P5: 12:40 - 13:30
   { id: 'th-5', room: 'B-203', block: 'B', day: 'Thursday', startTime: '12:40', endTime: '13:30', subject: 'Physics' },
-  { id: 'th-6', room: 'B-207', block: 'B', day: 'Thursday', startTime: '10:00', endTime: '11:00', subject: 'Digital Electronics' },
+  // P2: 10:05 - 10:55
+  { id: 'th-6', room: 'B-207', block: 'B', day: 'Thursday', startTime: '10:05', endTime: '10:55', subject: 'Digital Electronics' },
+  // P5: 12:40 - 13:30
   { id: 'th-7', room: 'B-207', block: 'B', day: 'Thursday', startTime: '12:40', endTime: '13:30', subject: 'Mathematics' },
-  { id: 'th-8', room: 'B-112', block: 'B', day: 'Thursday', startTime: '09:00', endTime: '11:00', subject: 'Engineering Graphics' },
-  { id: 'th-9', room: 'B-112', block: 'B', day: 'Thursday', startTime: '13:00', endTime: '14:00', subject: 'Chemistry' },
+  // P1 & P2: 09:10 - 10:55
+  { id: 'th-8', room: 'B-112', block: 'B', day: 'Thursday', startTime: '09:10', endTime: '10:55', subject: 'Engineering Graphics' },
+  // P6: 13:30 - 14:20
+  { id: 'th-9', room: 'B-112', block: 'B', day: 'Thursday', startTime: '13:30', endTime: '14:20', subject: 'Chemistry' },
+  // P3: 11:00 - 11:50
   { id: 'th-10', room: 'B-202', block: 'B', day: 'Thursday', startTime: '11:00', endTime: '11:50', subject: 'Chemistry' },
+  // P3 & P4: 11:00 - 12:40
   { id: 'th-11', room: 'B-204', block: 'B', day: 'Thursday', startTime: '11:00', endTime: '12:40', subject: 'Data Structures' },
+  // P7: 14:20 - 15:10
+  { id: 'th-12', room: 'B-202', block: 'B', day: 'Thursday', startTime: '14:20', endTime: '15:10', subject: 'Machine Learning' },
+  // P8: 15:10 - 16:00
+  { id: 'th-13', room: 'B-203', block: 'B', day: 'Thursday', startTime: '15:10', endTime: '16:00', subject: 'Cyber Security' },
   
-  // Monday schedule (original sample in brief)
+  // Monday schedule
   { id: 'mo-1', room: 'B-201', block: 'B', day: 'Monday', startTime: '09:10', endTime: '10:00', subject: 'Mathematics' },
-  { id: 'mo-2', room: 'B-201', block: 'B', day: 'Monday', startTime: '10:00', endTime: '10:50', subject: 'Physics' },
+  { id: 'mo-2', room: 'B-201', block: 'B', day: 'Monday', startTime: '10:05', endTime: '10:55', subject: 'Physics' },
   { id: 'mo-3', room: 'B-201', block: 'B', day: 'Monday', startTime: '11:50', endTime: '12:40', subject: 'DBMS' },
-  { id: 'mo-4', room: 'B-203', block: 'B', day: 'Monday', startTime: '10:00', endTime: '11:00', subject: 'Discrete Mathematics' },
+  { id: 'mo-4', room: 'B-203', block: 'B', day: 'Monday', startTime: '10:05', endTime: '10:55', subject: 'Discrete Mathematics' },
   { id: 'mo-5', room: 'B-203', block: 'B', day: 'Monday', startTime: '12:40', endTime: '13:30', subject: 'Physics' },
-  { id: 'mo-6', room: 'B-207', block: 'B', day: 'Monday', startTime: '12:00', endTime: '12:50', subject: 'Mathematics' },
-  { id: 'mo-7', room: 'B-202', block: 'B', day: 'Monday', startTime: '09:00', endTime: '09:50', subject: 'Chemistry' },
-  { id: 'mo-8', room: 'B-204', block: 'B', day: 'Monday', startTime: '14:00', endTime: '14:50', subject: 'Data Structures' },
-  { id: 'mo-9', room: 'A-101', block: 'A', day: 'Monday', startTime: '09:00', endTime: '10:00', subject: 'Calculus' },
-  { id: 'mo-10', room: 'A-102', block: 'A', day: 'Monday', startTime: '10:00', endTime: '11:00', subject: 'English' },
+  { id: 'mo-6', room: 'B-207', block: 'B', day: 'Monday', startTime: '11:50', endTime: '12:40', subject: 'Mathematics' },
+  { id: 'mo-7', room: 'B-202', block: 'B', day: 'Monday', startTime: '09:10', endTime: '10:00', subject: 'Chemistry' },
+  { id: 'mo-8', room: 'B-204', block: 'B', day: 'Monday', startTime: '13:30', endTime: '14:20', subject: 'Data Structures' },
+  { id: 'mo-9', room: 'A-101', block: 'A', day: 'Monday', startTime: '09:10', endTime: '10:00', subject: 'Calculus' },
+  { id: 'mo-10', room: 'A-102', block: 'A', day: 'Monday', startTime: '10:05', endTime: '10:55', subject: 'English' },
 
   // Block A, C, D samples
-  { id: 'a-1', room: 'A-101', block: 'A', day: 'Thursday', startTime: '09:00', endTime: '10:00', subject: 'Calculus' },
-  { id: 'a-2', room: 'A-101', block: 'A', day: 'Thursday', startTime: '12:00', endTime: '13:00', subject: 'Linear Algebra' },
-  { id: 'a-3', room: 'A-102', block: 'A', day: 'Thursday', startTime: '10:00', endTime: '11:00', subject: 'Professional Communication' },
-  { id: 'c-1', room: 'C-301', block: 'C', day: 'Thursday', startTime: '09:00', endTime: '10:30', subject: 'Environmental Studies' },
-  { id: 'c-2', room: 'C-302', block: 'C', day: 'Thursday', startTime: '11:00', endTime: '12:00', subject: 'Organic Chemistry' },
-  { id: 'd-1', room: 'D-401', block: 'D', day: 'Thursday', startTime: '10:00', endTime: '11:30', subject: 'Microprocessors' },
-  { id: 'd-2', room: 'D-402', block: 'D', day: 'Thursday', startTime: '13:00', endTime: '14:30', subject: 'Design Thinking' },
+  { id: 'a-1', room: 'A-101', block: 'A', day: 'Thursday', startTime: '09:10', endTime: '10:00', subject: 'Calculus' },
+  { id: 'a-2', room: 'A-101', block: 'A', day: 'Thursday', startTime: '11:50', endTime: '12:40', subject: 'Linear Algebra' },
+  { id: 'a-3', room: 'A-102', block: 'A', day: 'Thursday', startTime: '10:05', endTime: '10:55', subject: 'Professional Communication' },
+  { id: 'c-1', room: 'C-301', block: 'C', day: 'Thursday', startTime: '09:10', endTime: '10:00', subject: 'Environmental Studies' },
+  { id: 'c-2', room: 'C-302', block: 'C', day: 'Thursday', startTime: '11:00', endTime: '11:50', subject: 'Organic Chemistry' },
+  { id: 'd-1', room: 'D-401', block: 'D', day: 'Thursday', startTime: '10:05', endTime: '10:55', subject: 'Microprocessors' },
+  { id: 'd-2', room: 'D-402', block: 'D', day: 'Thursday', startTime: '13:30', endTime: '14:20', subject: 'Design Thinking' },
 ]
 
 /**

@@ -1,34 +1,18 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import { Search, Bell, BookOpen, ChevronRight } from 'lucide-react'
+import { Search, Bell, BookOpen, ChevronRight, Clock, Eye } from 'lucide-react'
 import Navbar from '../components/Navbar'
+import classroomRefSvg from '../assets/kr-mangalam-classroom.svg'
 import { useApp } from '../context/AppContext'
-import { calculateScheduleAvailability } from '../utils/timetableLogic'
+import {
+  calculateScheduleAvailability,
+  UNIVERSITY_PERIODS,
+  UNIVERSITY_START_TIMES,
+  UNIVERSITY_END_TIMES,
+  parseTimeToMinutes,
+} from '../utils/timetableLogic'
 
 const BLOCKS = ['Block A', 'Block B', 'Block C', 'Block D']
-const TIMES = [
-  '08:00 AM',
-  '08:30 AM',
-  '09:00 AM',
-  '09:10 AM',
-  '09:30 AM',
-  '10:00 AM',
-  '10:30 AM',
-  '10:50 AM',
-  '11:00 AM',
-  '11:30 AM',
-  '11:50 AM',
-  '12:00 PM',
-  '12:30 PM',
-  '12:40 PM',
-  '01:00 PM',
-  '01:30 PM',
-  '02:00 PM',
-  '02:30 PM',
-  '03:00 PM',
-  '03:30 PM',
-  '04:00 PM',
-]
 
 export default function StudentDashboard() {
   const [block, setBlock] = useState('Block B')
@@ -36,7 +20,7 @@ export default function StudentDashboard() {
   const [startTime, setStartTime] = useState('11:00 AM')
   const [endTime, setEndTime] = useState('11:50 AM')
   const navigate = useNavigate()
-  const { announcements, timetable } = useApp()
+  const { announcements, timetable, currentStudent } = useApp()
 
   const unread = announcements.filter(a => !a.isRead)
   const recentAnnouncements = announcements.slice(0, 2)
@@ -53,6 +37,22 @@ export default function StudentDashboard() {
   const totalBlockRooms = allRoomsInBlock.length || 6
   const freeRoomsCount = availableRooms.length
   const freePercentage = totalBlockRooms > 0 ? Math.round((freeRoomsCount / totalBlockRooms) * 100) : 0
+
+  const handleStartTimeChange = (newStart: string) => {
+    setStartTime(newStart)
+    const matchingPeriod = UNIVERSITY_PERIODS.find(p => p.startTime === newStart)
+    if (matchingPeriod) {
+      const startMin = parseTimeToMinutes(newStart)
+      const currentEndMin = parseTimeToMinutes(endTime)
+      if (currentEndMin <= startMin) {
+        setEndTime(matchingPeriod.endTime)
+      }
+    }
+  }
+
+  const currentMatchingPeriod = UNIVERSITY_PERIODS.find(
+    p => p.startTime === startTime && p.endTime === endTime,
+  )
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
@@ -75,7 +75,7 @@ export default function StudentDashboard() {
         {/* Greeting */}
         <div className="mb-8">
           <h1 className="font-display text-3xl font-700 text-[#0F2557] mb-1">
-            Hello, Student 👋
+            Hello, {currentStudent?.name || 'Student'} 👋
           </h1>
           <p className="text-[#6B7BA4]">Need a place to sit during your free period?</p>
         </div>
@@ -120,6 +120,50 @@ export default function StudentDashboard() {
                   />
                 </div>
 
+                {/* University Class Period Selectors */}
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="block text-xs font-semibold text-[#0F2557] uppercase tracking-wider">
+                      University Period Quick-Select
+                    </label>
+                    <span className="text-[11px] text-[#6B7BA4] flex items-center gap-1">
+                      <Clock size={12} /> 50-min lecture slots
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    {UNIVERSITY_PERIODS.map(p => {
+                      const isSelected = startTime === p.startTime && endTime === p.endTime
+                      return (
+                        <button
+                          key={p.id}
+                          type="button"
+                          onClick={() => {
+                            setStartTime(p.startTime)
+                            setEndTime(p.endTime)
+                          }}
+                          className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
+                            isSelected
+                              ? 'bg-[#0F2557] text-white border-[#0F2557] shadow-sm ring-2 ring-[#0F2557]/20'
+                              : 'bg-[#F8FAFF] hover:bg-[#E8EEFF] text-[#0D1B3E] border-[#D4DEFF]'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between">
+                            <span className={`text-xs font-bold ${isSelected ? 'text-[#93C5FD]' : 'text-[#2563EB]'}`}>
+                              {p.label}
+                            </span>
+                            {isSelected && (
+                              <span className="w-1.5 h-1.5 rounded-full bg-[#60A5FA]" />
+                            )}
+                          </div>
+                          <div className={`text-[11px] font-mono mt-1 ${isSelected ? 'text-white/90' : 'text-[#6B7BA4]'}`}>
+                            {p.startTime.replace(':00', '').replace(' ', '')} - {p.endTime.replace(':00', '').replace(' ', '')}
+                          </div>
+                        </button>
+                      )
+                    })}
+                  </div>
+                </div>
+
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-[#0D1B3E] mb-1.5">
@@ -127,11 +171,13 @@ export default function StudentDashboard() {
                     </label>
                     <select
                       value={startTime}
-                      onChange={e => setStartTime(e.target.value)}
-                      className="w-full px-4 py-3 rounded-xl border border-[#D4DEFF] bg-[#F4F7FF] text-[#0D1B3E] text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB]/30 focus:border-[#2563EB] transition"
+                      onChange={e => handleStartTimeChange(e.target.value)}
+                      className="w-full px-4 py-3 rounded-xl border border-[#D4DEFF] bg-[#F4F7FF] text-[#0D1B3E] text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB]/30 focus:border-[#2563EB] transition font-mono"
                     >
-                      {TIMES.map(t => (
-                        <option key={t}>{t}</option>
+                      {UNIVERSITY_START_TIMES.map(t => (
+                        <option key={t} value={t}>
+                          {t}
+                        </option>
                       ))}
                     </select>
                   </div>
@@ -140,10 +186,12 @@ export default function StudentDashboard() {
                     <select
                       value={endTime}
                       onChange={e => setEndTime(e.target.value)}
-                      className="w-full px-4 py-3 rounded-xl border border-[#D4DEFF] bg-[#F4F7FF] text-[#0D1B3E] text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB]/30 focus:border-[#2563EB] transition"
+                      className="w-full px-4 py-3 rounded-xl border border-[#D4DEFF] bg-[#F4F7FF] text-[#0D1B3E] text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB]/30 focus:border-[#2563EB] transition font-mono"
                     >
-                      {TIMES.map(t => (
-                        <option key={t}>{t}</option>
+                      {UNIVERSITY_END_TIMES.map(t => (
+                        <option key={t} value={t}>
+                          {t}
+                        </option>
                       ))}
                     </select>
                   </div>
@@ -187,6 +235,37 @@ export default function StudentDashboard() {
               <p className="text-xs text-[#6B7BA4] mt-2">
                 {freeRoomsCount} of {totalBlockRooms} classrooms in {block} available for this interval
               </p>
+            </div>
+
+            {/* Classroom Reference Card */}
+            <div className="bg-white rounded-2xl border border-[#D4DEFF] overflow-hidden shadow-sm">
+              <div className="relative h-32 w-full bg-[#0D1B3E] overflow-hidden group">
+                <img
+                  src={classroomRefSvg}
+                  alt="K.R. Mangalam University Lecture Theatre"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0F2557]/80 to-transparent" />
+                <div className="absolute bottom-2.5 left-3 text-white">
+                  <span className="text-[10px] uppercase font-mono tracking-wider text-white/80 bg-black/40 px-2 py-0.5 rounded backdrop-blur-sm">
+                    Classroom Reference
+                  </span>
+                  <p className="text-xs font-semibold text-white mt-1">Tiered Lecture Theatre Layout</p>
+                </div>
+              </div>
+              <div className="p-4 flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-medium text-[#0F2557]">K.R. Mangalam University</p>
+                  <p className="text-[11px] text-[#6B7BA4]">Standard 60-seat lecture hall reference</p>
+                </div>
+                <Link
+                  to="/room/B-203"
+                  className="flex items-center gap-1 text-xs font-semibold text-[#2563EB] hover:text-[#1D4ED8] bg-[#E8EEFF] hover:bg-[#D8E4FF] px-3 py-1.5 rounded-lg transition"
+                >
+                  <Eye size={12} />
+                  View Classroom
+                </Link>
+              </div>
             </div>
 
             {/* Unread notification */}

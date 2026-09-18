@@ -31,6 +31,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<StudentLogin />} />
+          <Route path="/signup" element={<StudentLogin initialMode="signup" />} />
           <Route path="/dashboard" element={<StudentDashboard />} />
           <Route path="/search" element={<SearchResults />} />
           <Route path="/room/:id" element={<RoomDetails />} />

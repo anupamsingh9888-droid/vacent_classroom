@@ -1,0 +1,285 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="100%" height="100%">
+  <defs>
+    <!-- Gradients -->
+    <linearGradient id="wallGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#F6F4EE" />
+      <stop offset="70%" stop-color="#EFECE4" />
+      <stop offset="100%" stop-color="#E3DFC4" />
+    </linearGradient>
+    <linearGradient id="skyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#EBF5FB" />
+      <stop offset="40%" stop-color="#DDF0FA" />
+      <stop offset="100%" stop-color="#C8E6C9" />
+    </linearGradient>
+    <linearGradient id="treeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#6DA47A" />
+      <stop offset="50%" stop-color="#467A53" />
+      <stop offset="100%" stop-color="#2D5A38" />
+    </linearGradient>
+    <linearGradient id="floorGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#5D6470" />
+      <stop offset="100%" stop-color="#424853" />
+    </linearGradient>
+    <linearGradient id="woodDark" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#8A5935" />
+      <stop offset="50%" stop-color="#704322" />
+      <stop offset="100%" stop-color="#593417" />
+    </linearGradient>
+    <linearGradient id="woodMid" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#A37048" />
+      <stop offset="50%" stop-color="#8A5832" />
+      <stop offset="100%" stop-color="#734421" />
+    </linearGradient>
+    <linearGradient id="woodTop" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#F7F3EB" />
+      <stop offset="100%" stop-color="#E5DFC8" />
+    </linearGradient>
+    <linearGradient id="chairWood" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#B68257" />
+      <stop offset="100%" stop-color="#8D5D37" />
+    </linearGradient>
+    <linearGradient id="windowGlow" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.6" />
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0.1" />
+    </linearGradient>
+    <filter id="subtleShadow" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-opacity="0.2" />
+    </filter>
+  </defs>
+
+  <!-- Base Wall Background -->
+  <rect width="1600" height="900" fill="url(#wallGrad)" />
+
+  <!-- Ceiling Feature -->
+  <polygon points="0,0 1600,0 1600,85 0,85" fill="#F9F7F2" />
+  <line x1="0" y1="85" x2="1600" y2="85" stroke="#DCD7C9" stroke-width="2" />
+  
+  <!-- Ceiling Fan hint -->
+  <circle cx="520" cy="8" r="9" fill="#D5D0C2" />
+  <path d="M480,8 L560,8" stroke="#E4DFC8" stroke-width="4" stroke-linecap="round" opacity="0.5" />
+
+  <!-- Side Windows (Left & Right) -->
+  <!-- Left Window -->
+  <polygon points="30,120 180,140 180,310 30,320" fill="#D9E8EB" opacity="0.75" />
+  <line x1="30" y1="120" x2="180" y2="140" stroke="#737B87" stroke-width="3" />
+  <line x1="180" y1="140" x2="180" y2="310" stroke="#737B87" stroke-width="3" />
+  
+  <!-- Right Window -->
+  <polygon points="1420,140 1570,120 1570,320 1420,310" fill="#D9E8EB" opacity="0.75" />
+  <line x1="1420" y1="140" x2="1570" y2="120" stroke="#737B87" stroke-width="3" />
+  <line x1="1420" y1="140" x2="1420" y2="310" stroke="#737B87" stroke-width="3" />
+
+  <!-- Central Panoramic Window System -->
+  <g id="centralWindow">
+    <!-- Outer Window Frame -->
+    <rect x="520" y="140" width="560" height="125" fill="#39404B" rx="3" />
+    
+    <!-- Sky & Outdoors -->
+    <rect x="526" y="146" width="548" height="113" fill="url(#skyGrad)" />
+    
+    <!-- Distant campus buildings & trees outside window -->
+    <rect x="560" y="190" width="110" height="69" fill="#D4DEE5" opacity="0.7" />
+    <rect x="750" y="195" width="85" height="64" fill="#CCD7DF" opacity="0.7" />
+    
+    <!-- Lush Green Trees Canopy Outside -->
+    <ellipse cx="550" cy="240" rx="55" ry="35" fill="url(#treeGrad)" />
+    <ellipse cx="610" cy="235" rx="60" ry="40" fill="#477D54" />
+    <ellipse cx="670" cy="240" rx="50" ry="32" fill="#5A9168" />
+    <ellipse cx="730" cy="245" rx="55" ry="30" fill="#40704B" />
+    <ellipse cx="800" cy="235" rx="65" ry="40" fill="#528960" />
+    <ellipse cx="870" cy="240" rx="55" ry="35" fill="#477D54" />
+    <ellipse cx="930" cy="238" rx="60" ry="38" fill="#3B6C45" />
+    <ellipse cx="990" cy="245" rx="50" ry="30" fill="#5A9168" />
+    <ellipse cx="1045" cy="240" rx="45" ry="35" fill="#40704B" />
+
+    <!-- Window Mullions/Panels -->
+    <line x1="657" y1="146" x2="657" y2="259" stroke="#39404B" stroke-width="4" />
+    <line x1="793" y1="146" x2="793" y2="259" stroke="#39404B" stroke-width="4" />
+    <line x1="930" y1="146" x2="930" y2="259" stroke="#39404B" stroke-width="4" />
+    <line x1="526" y1="170" x2="1074" y2="170" stroke="#39404B" stroke-width="2" />
+    
+    <!-- Glass Light Sheen -->
+    <rect x="526" y="146" width="548" height="113" fill="url(#windowGlow)" />
+  </g>
+
+  <!-- K.R. MANGALAM UNIVERSITY Sign Board above central window -->
+  <g id="universitySign" filter="url(#subtleShadow)">
+    <!-- Sign Plaque -->
+    <rect x="695" y="102" width="210" height="30" rx="3" fill="#FFFFFF" stroke="#2563EB" stroke-width="1.5" />
+    
+    <!-- Left Logo Emblem -->
+    <circle cx="712" cy="117" r="7" fill="#E8EEFF" stroke="#1E40AF" stroke-width="1" />
+    <path d="M709,119 L712,113 L715,119 Z" fill="#1E40AF" />
+
+    <!-- Text: K.R. MANGALAM UNIVERSITY -->
+    <text x="800" y="122" font-family="sans-serif" font-size="8.5" font-weight="700" fill="#0F2557" text-anchor="middle" letter-spacing="1">K.R. MANGALAM UNIVERSITY</text>
+
+    <!-- Right Logo Emblem -->
+    <circle cx="888" cy="117" r="7" fill="#E8EEFF" stroke="#1E40AF" stroke-width="1" />
+    <path d="M885,119 L888,113 L891,119 Z" fill="#1E40AF" />
+  </g>
+
+  <!-- Stepped Tiered Floors & Rows of Wooden Desks (Rising Perspective) -->
+
+  <!-- Tier 7 (Backmost Row) -->
+  <g id="row7">
+    <polygon points="410,268 1190,268 1205,282 395,282" fill="#424853" />
+    <!-- Desks -->
+    <rect x="450" y="264" width="700" height="6" fill="url(#woodTop)" rx="1" />
+    <rect x="450" y="270" width="700" height="10" fill="url(#woodDark)" />
+  </g>
+
+  <!-- Tier 6 -->
+  <g id="row6">
+    <polygon points="360,286 1240,286 1255,302 345,302" fill="#4C535F" />
+    <!-- Chair backs Row 6 -->
+    <rect x="490" y="277" width="38" height="14" rx="2" fill="url(#chairWood)" />
+    <rect x="550" y="277" width="38" height="14" rx="2" fill="url(#chairWood)" />
+    <rect x="610" y="277" width="38" height="14" rx="2" fill="url(#chairWood)" />
+    <rect x="670" y="277" width="38" height="14" rx="2" fill="url(#chairWood)" />
+    <rect x="750" y="277" width="38" height="14" rx="2" fill="url(#chairWood)" />
+    <rect x="810" y="277" width="38" height="14" rx="2" fill="url(#chairWood)" />
+    <rect x="870" y="277" width="38" height="14" rx="2" fill="url(#chairWood)" />
+    <rect x="930" y="277" width="38" height="14" rx="2" fill="url(#chairWood)" />
+    <rect x="990" y="277" width="38" height="14" rx="2" fill="url(#chairWood)" />
+    <rect x="1050" y="277" width="38" height="14" rx="2" fill="url(#chairWood)" />
+    <!-- Desks Row 6 -->
+    <rect x="395" y="291" width="810" height="8" fill="url(#woodTop)" rx="1" />
+    <rect x="395" y="299" width="810" height="14" fill="url(#woodDark)" />
+  </g>
+
+  <!-- Tier 5 -->
+  <g id="row5">
+    <polygon points="300,314 1300,314 1320,336 280,336" fill="#535A67" />
+    <!-- Chair backs Row 5 -->
+    <rect x="430" y="304" width="46" height="17" rx="2.5" fill="url(#chairWood)" />
+    <rect x="500" y="304" width="46" height="17" rx="2.5" fill="url(#chairWood)" />
+    <rect x="570" y="304" width="46" height="17" rx="2.5" fill="url(#chairWood)" />
+    <rect x="640" y="304" width="46" height="17" rx="2.5" fill="url(#chairWood)" />
+    <rect x="740" y="304" width="46" height="17" rx="2.5" fill="url(#chairWood)" />
+    <rect x="810" y="304" width="46" height="17" rx="2.5" fill="url(#chairWood)" />
+    <rect x="880" y="304" width="46" height="17" rx="2.5" fill="url(#chairWood)" />
+    <rect x="950" y="304" width="46" height="17" rx="2.5" fill="url(#chairWood)" />
+    <rect x="1020" y="304" width="46" height="17" rx="2.5" fill="url(#chairWood)" />
+    <rect x="1090" y="304" width="46" height="17" rx="2.5" fill="url(#chairWood)" />
+    <!-- Desks Row 5 -->
+    <rect x="340" y="322" width="920" height="10" fill="url(#woodTop)" rx="1.5" />
+    <rect x="340" y="332" width="920" height="18" fill="url(#woodDark)" />
+  </g>
+
+  <!-- Tier 4 -->
+  <g id="row4">
+    <polygon points="240,352 1360,352 1385,380 215,380" fill="#5D6574" />
+    <!-- Chair backs Row 4 -->
+    <rect x="360" y="340" width="55" height="20" rx="3" fill="url(#chairWood)" />
+    <rect x="440" y="340" width="55" height="20" rx="3" fill="url(#chairWood)" />
+    <rect x="520" y="340" width="55" height="20" rx="3" fill="url(#chairWood)" />
+    <rect x="600" y="340" width="55" height="20" rx="3" fill="url(#chairWood)" />
+    <rect x="725" y="340" width="55" height="20" rx="3" fill="url(#chairWood)" />
+    <rect x="805" y="340" width="55" height="20" rx="3" fill="url(#chairWood)" />
+    <rect x="885" y="340" width="55" height="20" rx="3" fill="url(#chairWood)" />
+    <rect x="965" y="340" width="55" height="20" rx="3" fill="url(#chairWood)" />
+    <rect x="1045" y="340" width="55" height="20" rx="3" fill="url(#chairWood)" />
+    <rect x="1125" y="340" width="55" height="20" rx="3" fill="url(#chairWood)" />
+    <!-- Desks Row 4 -->
+    <rect x="280" y="362" width="1040" height="12" fill="url(#woodTop)" rx="2" />
+    <rect x="280" y="374" width="1040" height="24" fill="url(#woodMid)" />
+  </g>
+
+  <!-- Tier 3 -->
+  <g id="row3">
+    <polygon points="170,400 1430,400 1460,436 140,436" fill="#677080" />
+    <!-- Chair backs Row 3 -->
+    <rect x="290" y="385" width="68" height="26" rx="4" fill="url(#chairWood)" />
+    <rect x="390" y="385" width="68" height="26" rx="4" fill="url(#chairWood)" />
+    <rect x="490" y="385" width="68" height="26" rx="4" fill="url(#chairWood)" />
+    <rect x="590" y="385" width="68" height="26" rx="4" fill="url(#chairWood)" />
+    <rect x="710" y="385" width="68" height="26" rx="4" fill="url(#chairWood)" />
+    <rect x="810" y="385" width="68" height="26" rx="4" fill="url(#chairWood)" />
+    <rect x="910" y="385" width="68" height="26" rx="4" fill="url(#chairWood)" />
+    <rect x="1010" y="385" width="68" height="26" rx="4" fill="url(#chairWood)" />
+    <rect x="1110" y="385" width="68" height="26" rx="4" fill="url(#chairWood)" />
+    <rect x="1210" y="385" width="68" height="26" rx="4" fill="url(#chairWood)" />
+    <!-- Desks Row 3 -->
+    <rect x="210" y="414" width="1180" height="16" fill="url(#woodTop)" rx="2.5" />
+    <rect x="210" y="430" width="1180" height="34" fill="url(#woodMid)" />
+  </g>
+
+  <!-- Tier 2 -->
+  <g id="row2">
+    <polygon points="90,466 1510,466 1550,515 50,515" fill="#707A8B" />
+    <!-- Chair backs Row 2 -->
+    <rect x="210" y="445" width="86" height="34" rx="5" fill="url(#chairWood)" />
+    <rect x="330" y="445" width="86" height="34" rx="5" fill="url(#chairWood)" />
+    <rect x="450" y="445" width="86" height="34" rx="5" fill="url(#chairWood)" />
+    <rect x="570" y="445" width="86" height="34" rx="5" fill="url(#chairWood)" />
+    <rect x="700" y="445" width="86" height="34" rx="5" fill="url(#chairWood)" />
+    <rect x="820" y="445" width="86" height="34" rx="5" fill="url(#chairWood)" />
+    <rect x="940" y="445" width="86" height="34" rx="5" fill="url(#chairWood)" />
+    <rect x="1060" y="445" width="86" height="34" rx="5" fill="url(#chairWood)" />
+    <rect x="1180" y="445" width="86" height="34" rx="5" fill="url(#chairWood)" />
+    <rect x="1300" y="445" width="86" height="34" rx="5" fill="url(#chairWood)" />
+    <!-- Desks Row 2 -->
+    <rect x="130" y="486" width="1340" height="20" fill="url(#woodTop)" rx="3" />
+    <rect x="130" y="506" width="1340" height="48" fill="url(#woodMid)" />
+  </g>
+
+  <!-- Tier 1 & Foreground Row (Prominent Desk in foreground matching the photo) -->
+  <g id="row1Foreground">
+    <polygon points="0,555 1600,555 1600,900 0,900" fill="url(#floorGrad)" />
+    
+    <!-- Floor Tile Joints -->
+    <line x1="250" y1="555" x2="100" y2="900" stroke="#383D47" stroke-width="1.5" opacity="0.6" />
+    <line x1="580" y1="555" x2="500" y2="900" stroke="#383D47" stroke-width="1.5" opacity="0.6" />
+    <line x1="1020" y1="555" x2="1100" y2="900" stroke="#383D47" stroke-width="1.5" opacity="0.6" />
+    <line x1="1350" y1="555" x2="1500" y2="900" stroke="#383D47" stroke-width="1.5" opacity="0.6" />
+    <line x1="0" y1="680" x2="1600" y2="680" stroke="#383D47" stroke-width="1.5" opacity="0.5" />
+
+    <!-- Chair backs for Tier 1 -->
+    <rect x="160" y="535" width="110" height="44" rx="6" fill="url(#chairWood)" />
+    <rect x="310" y="535" width="110" height="44" rx="6" fill="url(#chairWood)" />
+    <rect x="460" y="535" width="110" height="44" rx="6" fill="url(#chairWood)" />
+    <rect x="610" y="535" width="110" height="44" rx="6" fill="url(#chairWood)" />
+    <rect x="750" y="535" width="110" height="44" rx="6" fill="url(#chairWood)" />
+    <rect x="890" y="535" width="110" height="44" rx="6" fill="url(#chairWood)" />
+    <rect x="1040" y="535" width="110" height="44" rx="6" fill="url(#chairWood)" />
+    <rect x="1190" y="535" width="110" height="44" rx="6" fill="url(#chairWood)" />
+    <rect x="1340" y="535" width="110" height="44" rx="6" fill="url(#chairWood)" />
+
+    <!-- Mid Foreground Desk (Tier 1 Desk) -->
+    <rect x="80" y="585" width="1440" height="28" fill="url(#woodTop)" rx="4" />
+    <rect x="80" y="613" width="1440" height="65" fill="url(#woodMid)" />
+    
+    <!-- Chair backs of the Front Row (just behind bottom desk) -->
+    <rect x="220" y="600" width="125" height="52" rx="7" fill="url(#chairWood)" />
+    <rect x="380" y="600" width="125" height="52" rx="7" fill="url(#chairWood)" />
+    <rect x="540" y="600" width="125" height="52" rx="7" fill="url(#chairWood)" />
+    <rect x="730" y="600" width="125" height="52" rx="7" fill="url(#chairWood)" />
+    <rect x="900" y="600" width="125" height="52" rx="7" fill="url(#chairWood)" />
+    <rect x="1070" y="600" width="125" height="52" rx="7" fill="url(#chairWood)" />
+    <rect x="1240" y="600" width="125" height="52" rx="7" fill="url(#chairWood)" />
+
+    <!-- Huge Front Desk Across Bottom of Viewport (Matching User Photo Exact Composition) -->
+    <polygon points="20,676 1580,676 1550,726 50,726" fill="url(#woodTop)" />
+    <rect x="45" y="724" width="1510" height="176" fill="url(#woodDark)" />
+    
+    <!-- Vertical Woodgrain Accent Lines on Front Modesty Panel -->
+    <line x1="180" y1="724" x2="180" y2="900" stroke="#4F2E14" stroke-width="2" />
+    <line x1="420" y1="724" x2="420" y2="900" stroke="#4F2E14" stroke-width="2" />
+    <line x1="800" y1="724" x2="800" y2="900" stroke="#4F2E14" stroke-width="2.5" />
+    <line x1="1180" y1="724" x2="1180" y2="900" stroke="#4F2E14" stroke-width="2" />
+    <line x1="1420" y1="724" x2="1420" y2="900" stroke="#4F2E14" stroke-width="2" />
+
+    <!-- Warm Highlight Line on Desk Rim -->
+    <line x1="20" y1="676" x2="1580" y2="676" stroke="#FFFFFF" stroke-width="2.5" opacity="0.8" />
+    <line x1="50" y1="725" x2="1550" y2="725" stroke="#D39D68" stroke-width="3" />
+  </g>
+
+  <!-- Ambient Light Vignette & Sunlight Atmosphere -->
+  <radialGradient id="sunlight" cx="50%" cy="20%" r="65%">
+    <stop offset="0%" stop-color="#FFF9E6" stop-opacity="0.2" />
+    <stop offset="60%" stop-color="#FFFDF5" stop-opacity="0.05" />
+    <stop offset="100%" stop-color="#000000" stop-opacity="0.08" />
+  </radialGradient>
+  <rect width="1600" height="900" fill="url(#sunlight)" pointer-events="none" />
+</svg>

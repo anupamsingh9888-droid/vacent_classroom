@@ -1,7 +1,23 @@
+import { useState } from 'react'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
-import { ChevronLeft, Bookmark, BookmarkCheck, MapPin, Users, Wind, Monitor, Presentation } from 'lucide-react'
+import {
+  ChevronLeft,
+  Bookmark,
+  BookmarkCheck,
+  MapPin,
+  Users,
+  Wind,
+  Monitor,
+  Presentation,
+  Maximize2,
+  X,
+  Layers,
+  Building2,
+  CheckCircle2
+} from 'lucide-react'
 import Navbar from '../components/Navbar'
 import campusImg from '../assets/kr-mangalam-pic.png'
+import classroomRefSvg from '../assets/kr-mangalam-classroom.svg'
 import { useApp } from '../context/AppContext'
 import {
   UNIVERSITY_ROOMS,
@@ -25,6 +41,10 @@ export default function RoomDetails() {
 
   const currentRoomId = id || 'B-203'
   const saved = isRoomSaved(currentRoomId)
+
+  // View mode: classroom reference (default) or building exterior
+  const [viewMode, setViewMode] = useState<'classroom' | 'building'>('classroom')
+  const [isZoomed, setIsZoomed] = useState(false)
 
   // Find room in university catalog or fallback
   const catalogRoom = UNIVERSITY_ROOMS.find(r => r.id.toUpperCase() === currentRoomId.toUpperCase()) || {
@@ -117,21 +137,148 @@ export default function RoomDetails() {
           </button>
         </div>
 
-        {/* Campus Image */}
-        <div className="relative rounded-2xl overflow-hidden h-56 sm:h-72 mb-8 bg-[#0F2557]">
-          <img
-            src={campusImg}
-            alt="K.R. Mangalam University campus"
-            className="w-full h-full object-cover opacity-90"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0F2557]/60 to-transparent" />
-          <div className="absolute bottom-4 left-5 text-white">
-            <p className="text-xs font-mono opacity-60">K.R. Mangalam University</p>
-            <p className="font-display text-lg font-600">
-              Block {catalogRoom.block} · {catalogRoom.floor}
-            </p>
+        {/* Classroom & Campus Reference Visual Card */}
+        <div className="relative rounded-2xl overflow-hidden mb-8 border border-[#D4DEFF] bg-[#0F2557] shadow-sm group">
+          <div className="relative h-64 sm:h-84 md:h-96 w-full bg-[#0D1B3E] flex items-center justify-center overflow-hidden">
+            {viewMode === 'classroom' ? (
+              <img
+                src={classroomRefSvg}
+                alt={`Classroom ${catalogRoom.name} reference`}
+                className="w-full h-full object-cover select-none transition-transform duration-500 group-hover:scale-[1.01]"
+              />
+            ) : (
+              <img
+                src={campusImg}
+                alt="K.R. Mangalam University campus exterior"
+                className="w-full h-full object-cover select-none transition-transform duration-500 group-hover:scale-[1.01]"
+              />
+            )}
+
+            {/* Subtle Lighting Gradient */}
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0F2557]/85 via-[#0F2557]/20 to-black/30 pointer-events-none" />
+
+            {/* Top Bar: View Mode Switcher Pills */}
+            <div className="absolute top-4 right-4 flex items-center gap-2 z-10">
+              <div className="flex bg-black/50 backdrop-blur-md p-1 rounded-xl border border-white/15">
+                <button
+                  type="button"
+                  onClick={() => setViewMode('classroom')}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                    viewMode === 'classroom'
+                      ? 'bg-[#2563EB] text-white shadow-sm'
+                      : 'text-white/80 hover:text-white hover:bg-white/10'
+                  }`}
+                >
+                  <Layers size={13} />
+                  Classroom View
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setViewMode('building')}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                    viewMode === 'building'
+                      ? 'bg-[#2563EB] text-white shadow-sm'
+                      : 'text-white/80 hover:text-white hover:bg-white/10'
+                  }`}
+                >
+                  <Building2 size={13} />
+                  Campus Block
+                </button>
+              </div>
+
+              {/* Fullscreen Zoom */}
+              <button
+                type="button"
+                onClick={() => setIsZoomed(true)}
+                title="Inspect classroom in full resolution"
+                className="p-2 rounded-xl bg-black/50 hover:bg-black/70 backdrop-blur-md text-white/90 hover:text-white border border-white/15 transition cursor-pointer"
+              >
+                <Maximize2 size={15} />
+              </button>
+            </div>
+
+            {/* Top Left: Reference Label */}
+            <div className="absolute top-4 left-4 z-10">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-black/50 backdrop-blur-md border border-white/15 text-white text-xs font-medium">
+                <CheckCircle2 size={13} className="text-[#38BDF8]" />
+                {viewMode === 'classroom' ? 'Classroom Reference' : 'Campus Building'}
+              </span>
+            </div>
+
+            {/* Bottom Overlay: Room Info */}
+            <div className="absolute bottom-4 left-4 right-4 flex flex-col sm:flex-row sm:items-end justify-between gap-3 z-10">
+              <div className="text-white">
+                <p className="text-xs font-mono text-white/75 tracking-wider uppercase mb-1">
+                  K.R. Mangalam University · Block {catalogRoom.block}
+                </p>
+                <h2 className="font-display text-xl sm:text-2xl font-700 text-white leading-tight">
+                  {catalogRoom.name} — {viewMode === 'classroom' ? 'Tiered Lecture Theatre' : 'Academic Wing'}
+                </h2>
+                <p className="text-xs text-white/80 mt-1 max-w-lg">
+                  {viewMode === 'classroom'
+                    ? 'Stepped wooden desks, natural daylight windows & smart presentation setup.'
+                    : `Located in Block ${catalogRoom.block} · ${catalogRoom.floor}`}
+                </p>
+              </div>
+            </div>
           </div>
         </div>
+
+        {/* Fullscreen Photo Inspection Modal */}
+        {isZoomed && (
+          <div
+            className="fixed inset-0 z-50 bg-black/90 backdrop-blur-sm flex flex-col items-center justify-center p-4 sm:p-6"
+            onClick={() => setIsZoomed(false)}
+          >
+            <div
+              className="relative max-w-5xl w-full bg-[#0D1B3E] rounded-2xl overflow-hidden border border-white/10 shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Modal Header */}
+              <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-[#0F2557]">
+                <div>
+                  <h3 className="font-display text-base font-600 text-white">
+                    Classroom Reference: {catalogRoom.name}
+                  </h3>
+                  <p className="text-xs text-white/60">
+                    K.R. Mangalam University · Tiered Lecture Hall Layout
+                  </p>
+                </div>
+                <button
+                  onClick={() => setIsZoomed(false)}
+                  className="p-1.5 rounded-lg text-white/70 hover:text-white hover:bg-white/10 transition cursor-pointer"
+                >
+                  <X size={18} />
+                </button>
+              </div>
+
+              {/* Modal Image */}
+              <div className="relative bg-black flex items-center justify-center max-h-[70vh] overflow-hidden">
+                <img
+                  src={viewMode === 'classroom' ? classroomRefSvg : campusImg}
+                  alt={`Enlarged view of ${catalogRoom.name}`}
+                  className="w-full h-full object-contain max-h-[70vh]"
+                />
+              </div>
+
+              {/* Modal Footer Notes */}
+              <div className="px-6 py-4 bg-[#0F2557] border-t border-white/10 flex flex-wrap items-center justify-between gap-3 text-xs text-white/75">
+                <div className="flex items-center gap-4">
+                  <span>Capacity: <strong className="text-white">{catalogRoom.seats} Seats</strong></span>
+                  <span>Layout: <strong className="text-white">Tiered Wooden Desks</strong></span>
+                  <span>Lighting: <strong className="text-white">Daylight Windows</strong></span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsZoomed(false)}
+                  className="px-4 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white font-medium transition cursor-pointer"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
           {/* Main Info */}

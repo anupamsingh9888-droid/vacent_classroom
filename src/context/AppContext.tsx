@@ -3,6 +3,13 @@ import { INITIAL_TIMETABLE_FALLBACK, type TimetableEntry } from '../utils/timeta
 
 export type { TimetableEntry }
 
+export interface StudentProfile {
+  name: string
+  email?: string
+  studentId?: string
+  program?: string
+}
+
 export interface Announcement {
   id: string
   title: string
@@ -15,10 +22,12 @@ export interface Announcement {
 interface AppContextType {
   isStudentLoggedIn: boolean
   isAdminLoggedIn: boolean
+  currentStudent: StudentProfile | null
   announcements: Announcement[]
   timetable: TimetableEntry[]
   savedRooms: string[]
-  loginStudent: () => void
+  loginStudent: (profile?: StudentProfile) => void
+  signupStudent: (profile: StudentProfile) => void
   logoutStudent: () => void
   loginAdmin: () => void
   logoutAdmin: () => void
@@ -72,6 +81,7 @@ const STORAGE_KEYS = {
   TIMETABLE: 'spacia_timetable_data',
   ANNOUNCEMENTS: 'spacia_announcements_data',
   STUDENT_AUTH: 'spacia_student_auth',
+  STUDENT_PROFILE: 'spacia_student_profile',
   ADMIN_AUTH: 'spacia_admin_auth',
   SAVED_ROOMS: 'spacia_saved_rooms',
 }
@@ -104,6 +114,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
     return loadFromStorage<boolean>(STORAGE_KEYS.STUDENT_AUTH, false)
   })
 
+  const [currentStudent, setCurrentStudent] = useState<StudentProfile | null>(() => {
+    return loadFromStorage<StudentProfile | null>(STORAGE_KEYS.STUDENT_PROFILE, null)
+  })
+
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState<boolean>(() => {
     return loadFromStorage<boolean>(STORAGE_KEYS.ADMIN_AUTH, false)
   })
@@ -129,6 +143,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }, [isStudentLoggedIn])
 
   useEffect(() => {
+    saveToStorage(STORAGE_KEYS.STUDENT_PROFILE, currentStudent)
+  }, [currentStudent])
+
+  useEffect(() => {
     saveToStorage(STORAGE_KEYS.ADMIN_AUTH, isAdminLoggedIn)
   }, [isAdminLoggedIn])
 
@@ -145,7 +163,23 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }, [savedRooms])
 
   // Authentication handlers - Strictly separate student and admin
-  const loginStudent = () => {
+  const loginStudent = (profile?: StudentProfile) => {
+    if (profile) {
+      setCurrentStudent(profile)
+    } else if (!currentStudent) {
+      setCurrentStudent({
+        name: 'KRMU Student',
+        email: 'student@krmu.edu.in',
+        studentId: '2023KRM001',
+        program: 'B.Tech CSE',
+      })
+    }
+    setIsStudentLoggedIn(true)
+    setIsAdminLoggedIn(false)
+  }
+
+  const signupStudent = (profile: StudentProfile) => {
+    setCurrentStudent(profile)
     setIsStudentLoggedIn(true)
     setIsAdminLoggedIn(false)
   }
@@ -207,10 +241,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
       value={{
         isStudentLoggedIn,
         isAdminLoggedIn,
+        currentStudent,
         announcements,
         timetable,
         savedRooms,
         loginStudent,
+        signupStudent,
         logoutStudent,
         loginAdmin,
         logoutAdmin,

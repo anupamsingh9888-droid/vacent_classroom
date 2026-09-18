@@ -2,7 +2,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import { ChevronLeft, MapPin, Clock, ArrowRight, AlertCircle } from 'lucide-react'
 import Navbar from '../components/Navbar'
 import { useApp } from '../context/AppContext'
-import { calculateScheduleAvailability } from '../utils/timetableLogic'
+import { calculateScheduleAvailability, UNIVERSITY_PERIODS } from '../utils/timetableLogic'
 
 function formatDate(dateStr: string) {
   if (!dateStr) return ''
@@ -20,6 +20,8 @@ export default function SearchResults() {
   const date = params.get('date') || '2026-09-17'
   const start = params.get('start') || '11:00 AM'
   const end = params.get('end') || '11:50 AM'
+
+  const matchingPeriod = UNIVERSITY_PERIODS.find(p => p.startTime === start && p.endTime === end)
 
   // Deterministic timetable conflict calculation
   const { availableRooms } = calculateScheduleAvailability(timetable, block, date, start, end)
